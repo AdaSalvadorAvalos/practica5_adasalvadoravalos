@@ -1,13 +1,14 @@
-Materiales:
-· ESP32
-· OLED Display I2C
-· KYYKA HTU21D I2C - Módulo de sensor de humedad
+# Práctica 5
 
-Presentación: 
-En esta práctica observamos el bus I2C, vemos que es más simple solo se usan dos cables(uno para la señal de reloj: CLK y otro para el envío de datos: SDA )  , es síncrono
-y tiene una arquitectura maestro-esclavo. Conectaremos un display donde podrá la humedad y temperatura actual.
+## Materiales:
+- ESP32
+- OLED Display I2C
+- KYYKA HTU21D I2C - Módulo de sensor de humedad
 
-Explicación del código:
+## Presentación: 
+En esta práctica observamos el bus I2C, vemos que es más simple solo se usan dos cables(uno para la señal de reloj: CLK y otro para el envío de datos: SDA )  , es síncrono y tiene una arquitectura maestro-esclavo. Conectaremos un display donde podrá la humedad y temperatura actual.
+
+## Explicación del código:
 
 
 ```
@@ -194,4 +195,4 @@ void loop() {
 
 ```
 
-salida explicada en el video:
+Salida explicada con claridad en el vídeo.
