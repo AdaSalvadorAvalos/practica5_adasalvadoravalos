@@ -8,7 +8,7 @@
 ## Presentación: 
 En esta práctica observamos el bus I2C, vemos que es más simple solo se usan dos cables(uno para la señal de reloj: CLK y otro para el envío de datos: SDA )  , es síncrono y tiene una arquitectura maestro-esclavo. Conectaremos un display donde podrá la humedad y temperatura actual.
 
-## Explicación del código:
+## Explicación del código (con comentarios que explican el funcionamiento línea a línea):
 
 
 ```
