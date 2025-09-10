@@ -14,34 +14,121 @@ We connect an OLED display to show the **current humidity and temperature** from
 ## Code Explanation (with line-by-line comments)
 ```cpp
 #include <Arduino.h>
-#include <Wire.h>               // Required for I2C
-#include "SSD1306Wire.h"        // Library for OLED display
-#include "SparkFunHTU21D.h"     // Library for HTU21D sensor
-#include "images.h"             // Custom image data (like WiFi logo)
 
-// Create HTU21D object
-HTU21D myHumidity;
+void init_temp_hum_task(void);
 
-// Initialize OLED display (address 0x3C, SDA, SCL pins auto-detected)
-SSD1306Wire display(0x3c, SDA, SCL);
+// Include the correct display library for I2C
+#include <Wire.h>              // Only required for Arduino 1.6.5 and earlier
+#include "SSD1306Wire.h"       
+
+#include "images.h"            // Custom XBM image file
+#include "SparkFunHTU21D.h"    // HTU21D sensor library
+
+HTU21D myHumidity;             // Create an HTU21D sensor object
+
+// Initialize the OLED display using I2C (Wire)
+SSD1306Wire display(0x3c, SDA, SCL);   // Address, SDA pin, SCL pin
+
+#define DEMO_DURATION 3000
+typedef void (*Demo)(void);
+
+int demoMode = 0;
+int counter = 1;
 
 void setup() {
-  Serial.begin(115200); // Set baud rate for serial communication
+  Serial.begin(115200);        // Start serial communication
+  Serial.println();
+  Serial.println();
+
   Serial.println("HTU21D Example!");
 
-  myHumidity.begin(); // Initialize humidity sensor
+  myHumidity.begin();          // Initialize the sensor
 
-  // Initialize OLED display
-  display.init();
-  display.flipScreenVertically(); // Flip screen orientation
-  display.setFont(ArialMT_Plain_10); // Set initial font
+  display.init();              // Initialize OLED display
+  display.flipScreenVertically(); // Flip screen vertically
+  display.setFont(ArialMT_Plain_10); // Set default font
 }
+
+// Demo: display text in different font sizes
+void drawFontFaceDemo() { 
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 0, "Hello world");
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 10, "Hello world");
+  display.setFont(ArialMT_Plain_24);
+  display.drawString(0, 26, "Hello world");
+}
+
+// Demo: text flowing and max width
+void drawTextFlowDemo() {
+  display.setFont(ArialMT_Plain_10);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawStringMaxWidth(0, 0, 128,
+    "Lorem ipsum\n dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore.");
+}
+
+// Demo: text alignment (left, center, right)
+void drawTextAlignmentDemo() {
+  display.setFont(ArialMT_Plain_10);
+
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0, 10, "Left aligned (0,10)");
+
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.drawString(64, 22, "Center aligned (64,22)");
+
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.drawString(128, 33, "Right aligned (128,33)");
+}
+
+// Demo: rectangles and pixels
+void drawRectDemo() {
+  for (int i = 0; i < 10; i++) {
+    display.setPixel(i, i);        // Draw pixel diagonal
+    display.setPixel(10 - i, i);   // Draw mirrored pixel
+  }
+  display.drawRect(12, 12, 20, 20);   // Draw rectangle outline
+  display.fillRect(14, 14, 17, 17);   // Draw filled rectangle
+  display.drawHorizontalLine(0, 40, 20); // Horizontal line
+  display.drawVerticalLine(40, 0, 20);   // Vertical line
+}
+
+// Demo: circles
+void drawCircleDemo() {
+  for (int i = 1; i < 8; i++) {
+    display.setColor(WHITE); 
+    display.drawCircle(32, 32, i * 3);   // Draw circle at (32,32) with increasing radius
+    if (i % 2 == 0) {
+      display.setColor(BLACK);           // Alternate colors
+    }
+    display.fillCircle(96, 32, 32 - i * 3); // Fill circle at (96,32)
+  }
+}
+
+// Demo: progress bar
+void drawProgressBarDemo() {
+  int progress = (counter / 5) % 100;
+  display.drawProgressBar(0, 32, 120, 10, progress); // Draw bar
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.drawString(64, 15, String(progress) + "%"); // Draw percentage
+}
+
+// Demo: display XBM image
+void drawImageDemo() {
+  display.drawXbm(34, 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+}
+
+// Array of demo functions
+Demo demos[] = {drawFontFaceDemo, drawTextFlowDemo, drawTextAlignmentDemo, drawRectDemo, drawCircleDemo, drawProgressBarDemo, drawImageDemo};
+int demoLength = (sizeof(demos) / sizeof(Demo));
+long timeSinceLastModeSwitch = 0;
 
 void loop() {
   float humd = myHumidity.readHumidity();      // Read humidity
   float temp = myHumidity.readTemperature();   // Read temperature
 
-  // Print values to Serial Monitor
+  // Print readings to serial monitor
   Serial.print("Time:");
   Serial.print(millis());
   Serial.print(" Temperature:");
@@ -49,37 +136,31 @@ void loop() {
   Serial.print("C");
   Serial.print(" Humidity:");
   Serial.print(humd, 1);
-  Serial.println("%");
+  Serial.print("%");
+  Serial.println();
 
-  // Clear display before drawing new frame
-  display.clear();
+  display.clear();                             // Clear display
 
-  // Draw humidity on OLED
   display.setTextAlignment(TEXT_ALIGN_CENTER);
   display.setFont(ArialMT_Plain_10);
-  display.drawString(64, 0, "HUMIDITY");
+  display.drawString(128/2, 0, "HUMIDITY");
   display.setFont(ArialMT_Plain_16);
-  display.drawString(64, 11, String(humd) + "%");
+  display.drawString(128/2, 11, String(humd)+ "%");
 
-  // Draw temperature on OLED
   display.setFont(ArialMT_Plain_10);
-  display.drawString(64, 30, "TEMPERATURE");
+  display.drawString(128/2, 30, "TEMPERATURE");
   display.setFont(ArialMT_Plain_16);
-  display.drawString(64, 41, String(temp) + "ºC");
+  display.drawString(128/2, 41, String(temp)+ "ºC");
 
-  // Draw elapsed time in HH:MM:SS format
   display.setFont(ArialMT_Plain_10);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.drawString(128, 54, 
-    String(millis()/3600000) + ":" +
-    String((millis()/60000)%60) + ":" +
-    String((millis()/1000)%60));
+  display.drawString(128, 54, String(millis()/3600000)+":"+String((millis()/60000)%60)+":"+String((millis()/1000)%(60));
 
-  // Send buffer to display
-  display.display();
+  display.display(); // Write buffer to display
 
-  delay(100); // Refresh every 100ms
+  delay(100); // Wait 100ms before next update
 }
+
 ```
 
 ### How to Run
