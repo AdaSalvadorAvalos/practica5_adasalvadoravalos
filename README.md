@@ -1,17 +1,138 @@
-# Práctica 5
+# Practice 5: I2C OLED Display with HTU21D Sensor on ESP32 (English Version)
 
-## Materiales:
+## Materials
+- ESP32  
+- OLED Display (I2C)  
+- KYYKA HTU21D I2C - Humidity & Temperature Sensor  
+
+## Introduction
+In this practice for the Digital Processors course, we explore the **I2C bus**.  
+We see that it is simpler since it only requires **two wires**: one for the clock signal (SCL) and one for data transmission (SDA).  
+It is synchronous and uses a master–slave architecture.  
+We connect an OLED display to show the **current humidity and temperature** from the HTU21D sensor.  
+
+## Code Explanation (with line-by-line comments)
+```cpp
+#include <Arduino.h>
+#include <Wire.h>               // Required for I2C
+#include "SSD1306Wire.h"        // Library for OLED display
+#include "SparkFunHTU21D.h"     // Library for HTU21D sensor
+#include "images.h"             // Custom image data (like WiFi logo)
+
+// Create HTU21D object
+HTU21D myHumidity;
+
+// Initialize OLED display (address 0x3C, SDA, SCL pins auto-detected)
+SSD1306Wire display(0x3c, SDA, SCL);
+
+void setup() {
+  Serial.begin(115200); // Set baud rate for serial communication
+  Serial.println("HTU21D Example!");
+
+  myHumidity.begin(); // Initialize humidity sensor
+
+  // Initialize OLED display
+  display.init();
+  display.flipScreenVertically(); // Flip screen orientation
+  display.setFont(ArialMT_Plain_10); // Set initial font
+}
+
+void loop() {
+  float humd = myHumidity.readHumidity();      // Read humidity
+  float temp = myHumidity.readTemperature();   // Read temperature
+
+  // Print values to Serial Monitor
+  Serial.print("Time:");
+  Serial.print(millis());
+  Serial.print(" Temperature:");
+  Serial.print(temp, 1);
+  Serial.print("C");
+  Serial.print(" Humidity:");
+  Serial.print(humd, 1);
+  Serial.println("%");
+
+  // Clear display before drawing new frame
+  display.clear();
+
+  // Draw humidity on OLED
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(64, 0, "HUMIDITY");
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(64, 11, String(humd) + "%");
+
+  // Draw temperature on OLED
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(64, 30, "TEMPERATURE");
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(64, 41, String(temp) + "ºC");
+
+  // Draw elapsed time in HH:MM:SS format
+  display.setFont(ArialMT_Plain_10);
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.drawString(128, 54, 
+    String(millis()/3600000) + ":" +
+    String((millis()/60000)%60) + ":" +
+    String((millis()/1000)%60));
+
+  // Send buffer to display
+  display.display();
+
+  delay(100); // Refresh every 100ms
+}
+```
+
+### How to Run
+
+1. **Install PlatformIO**
+   - Install [VS Code](https://code.visualstudio.com/)
+   - Install the [PlatformIO extension](https://platformio.org/install/ide?install=vscode)
+
+2. **Create a New Project**
+   - Open PlatformIO in VS Code
+   - Create a new project and select your board (**ESP32 Dev Module**)
+   - Choose **Arduino framework**
+
+3. **Install Required Libraries**
+   - Install in PlatformIO:
+     - `SparkFun HTU21D Humidity and Temperature Sensor`
+     - `ESP8266 and ESP32 OLED driver for SSD1306 displays`
+
+4. **Add the Code**
+   - Replace the contents of `src/main.cpp` with the code provided
+
+5. **Connect the Hardware**
+   - HTU21D sensor → I2C:
+     - SDA → GPIO 21
+     - SCL → GPIO 22
+   - OLED Display → Same I2C pins (SDA, SCL)
+   - Power both with 3.3V and GND
+
+6. **Build and Upload**
+   - Click **Build (✓)** to compile the code
+   - Click **Upload (→)** to flash the ESP32
+
+7. **Observe the Result**
+   - OLED will show **Humidity (%)**, **Temperature (ºC)**, and elapsed time
+   - Serial Monitor will also log the readings
+
+# Práctica 5: Pantalla OLED I2C con Sensor HTU21D en ESP32 (Versión en Español)
+
+## Materiales
 - ESP32
-- OLED Display I2C
+- OLED Display (I2C)
 - KYYKA HTU21D I2C - Módulo de sensor de humedad
 
-## Presentación: 
-En esta práctica observamos el bus I2C, vemos que es más simple solo se usan dos cables(uno para la señal de reloj: CLK y otro para el envío de datos: SDA )  , es síncrono y tiene una arquitectura maestro-esclavo. Conectaremos un display donde podrá la humedad y temperatura actual.
+## Introducción
 
-## Explicación del código (con comentarios que explican el funcionamiento línea a línea):
+En esta práctica del curso de Procesadores Digitales exploramos el **bus I2C**.
+Vemos que es más simple porque solo requiere **dos cables**: uno para la señal de reloj (SCL) y otro para el envío de datos (SDA).
+Es síncrono y tiene una arquitectura maestro–esclavo.
+Conectaremos una pantalla OLED donde se mostrarán la **humedad y temperatura actuales** medidas por el sensor HTU21D.
 
+## Explicación del código (con comentarios línea por línea):
 
-```
+```cpp
 #include <Arduino.h>
 
 
@@ -195,4 +316,40 @@ void loop() {
 
 ```
 
-Salida explicada con claridad en el vídeo.
+
+### Cómo Ejecutar
+
+1. **Instalar PlatformIO**
+   - Instala [VS Code](https://code.visualstudio.com/)
+   - Instala la [extensión PlatformIO](https://platformio.org/install/ide?install=vscode)
+
+2. **Crear un Nuevo Proyecto**
+   - Abre PlatformIO en VS Code
+   - Crea un nuevo proyecto y selecciona tu placa (**ESP32 Dev Module**)
+   - Elige **framework Arduino**
+
+3. **Instalar Librerías Requeridas**
+   - Instala en PlatformIO:
+     - `SparkFun HTU21D Humidity and Temperature Sensor`
+     - `ESP8266 and ESP32 OLED driver for SSD1306 displays`
+
+4. **Agregar el Código**
+   - Reemplaza el contenido de `src/main.cpp` con el código proporcionado
+
+5. **Conectar el Hardware**
+   - Sensor HTU21D → I2C:
+     - SDA → GPIO 21
+     - SCL → GPIO 22
+   - Pantalla OLED → mismos pines I2C (SDA, SCL)
+   - Alimenta ambos con 3.3V y GND
+
+6. **Compilar y Subir**
+   - Haz clic en **Build (✓)** para compilar
+   - Haz clic en **Upload (→)** para cargar la ESP32
+
+7. **Observar el Resultado**
+   - La pantalla OLED mostrará **Humedad (%)**, **Temperatura (ºC)** y tiempo transcurrido
+   - El Monitor Serie también mostrará las lecturas
+
+### Recursos
+- Video explicativo de la práctica con salida en OLED y Monitor Serie: [Ver video](assets/practica5.mp4)
