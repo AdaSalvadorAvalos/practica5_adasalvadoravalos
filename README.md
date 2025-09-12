@@ -197,6 +197,18 @@ void loop() {
    - OLED will show **Humidity (%)**, **Temperature (ºC)**, and elapsed time
    - Serial Monitor will also log the readings
 
+### Resources  
+- **Video Demonstration:** [Watch video](assets/practica5.mp4)  
+- **OLED Library GitHub:** [ESP8266 and ESP32 OLED driver for SSD1306 displays](https://github.com/ThingPulse/esp8266-oled-ssd1306)  
+- **Temperature Sensor Library:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Arduino_Library)  
+- **PlatformIO Dependencies (in `platformio.ini`):**  
+  ```ini
+  lib_deps = 
+    sparkfun/SparkFun HTU21D Humidity and Temperature Sensor Breakout@^1.1.3
+    thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@^4.2.1
+    ;jmparatte/jm_LCM2004A_I2C@^1.0.2
+  ```
+
 # Práctica 5: Pantalla OLED I2C con Sensor HTU21D en ESP32 (Versión en Español)
 
 ## Materiales
@@ -432,5 +444,14 @@ void loop() {
    - La pantalla OLED mostrará **Humedad (%)**, **Temperatura (ºC)** y tiempo transcurrido
    - El Monitor Serie también mostrará las lecturas
 
-### Recursos
-- Video explicativo de la práctica con salida en OLED y Monitor Serie: [Ver video](assets/practica5.mp4)
+### Recursos  
+- **Video demostrativo:** [Ver video](assets/practica5.mp4)  
+- **Librería OLED GitHub:** [ESP8266 and ESP32 OLED driver for SSD1306 displays](https://github.com/ThingPulse/esp8266-oled-ssd1306)  
+- **Librería del sensor de temperatura:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Arduino_Library)  
+- **Dependencias de PlatformIO (en `platformio.ini`):**  
+  ```ini
+  lib_deps = 
+    sparkfun/SparkFun HTU21D Humidity and Temperature Sensor Breakout@^1.1.3
+    thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@^4.2.1
+    ;jmparatte/jm_LCM2004A_I2C@^1.0.2
+  ```
