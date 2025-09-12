@@ -198,9 +198,10 @@ void loop() {
    - Serial Monitor will also log the readings
 
 ### Resources  
-- **Video Demonstration:** [Watch video](assets/practica5.mp4)  
+- **Video Demonstration:** [Watch video](assets/practica5.mp4)
+- **ESP32 Documentation:** [Espressif ESP32](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/index.html)  
 - **OLED Library GitHub:** [ESP8266 and ESP32 OLED driver for SSD1306 displays](https://github.com/ThingPulse/esp8266-oled-ssd1306)  
-- **Temperature Sensor Library:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Arduino_Library)  
+- **Temperature Sensor Library:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Breakout_Arduino_Library)  
 - **PlatformIO Dependencies (in `platformio.ini`):**  
   ```ini
   lib_deps = 
@@ -445,9 +446,10 @@ void loop() {
    - El Monitor Serie también mostrará las lecturas
 
 ### Recursos  
-- **Video demostrativo:** [Ver video](assets/practica5.mp4)  
+- **Video demostrativo:** [Ver video](assets/practica5.mp4)
+- **Documentación del ESP32:** [Espressif ESP32](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/index.html)  
 - **Librería OLED GitHub:** [ESP8266 and ESP32 OLED driver for SSD1306 displays](https://github.com/ThingPulse/esp8266-oled-ssd1306)  
-- **Librería del sensor de temperatura:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Arduino_Library)  
+- **Librería del sensor de temperatura:** [SparkFun HTU21D](https://github.com/sparkfun/SparkFun_HTU21D_Breakout_Arduino_Library)  
 - **Dependencias de PlatformIO (en `platformio.ini`):**  
   ```ini
   lib_deps = 
@@ -455,3 +457,4 @@ void loop() {
     thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@^4.2.1
     ;jmparatte/jm_LCM2004A_I2C@^1.0.2
   ```
+
